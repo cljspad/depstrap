@@ -1,2 +1,57 @@
 # webjars
 
+webjars is a ClojureScript repository (think [Clojars](https://clojars.org/)) for self-hosted ClojureScript projects. 
+
+You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/)
+
+## What/How?
+
+webjars wraps the `shadow.cljs.bootstrap.browser` API under the hoods to resolve dependencies. You can read about this API [here](https://code.thheller.com/blog/shadow-cljs/2017/10/14/bootstrap-support.html)
+
+webjars are simply pre-compiled `{:target :bootstrap}` libraries uploaded to S3 for your consumption :)
+
+Visit https://webjars.cljspad.dev to browse all available libraries.  
+
+## Usage
+
+Add the following dependency to your project:
+
+```clojure 
+[cljspad/webjars-api "0.1.0"]
+```
+
+And then:
+
+```clojure
+(require '[cljs.js :as cljs.js])
+(require '[webjars.api :as webjars])
+
+(defn print-result [result]
+  (js/console.log result))
+
+(defonce compiler-state (cljs.js/compiler-state))
+
+(defn eval-opts
+  [compiler-state]
+  {:eval cljs.js/js-eval
+   :load (partial webjars/load compiler-state)})
+
+(defn require-reagent []
+  (cljs.js/eval-str 
+    compiler-state 
+    "(require '[reagent.core :as rg])" 
+    "[test]" 
+    (eval-opts compiler-state)
+    print-result))
+
+(webjars/init compiler-state {:webjars/dependencies '[[reagent "1.0.0-alpha2"]]} require-reagent)
+```
+
+## Contributing 
+
+If you would like to submit a library to the webjars create an EDN definition in `repository/` like:
+
+```clojure
+{:package [reagent "1.0.0-alpha2"]
+ :entries [reagent.dom reagent.core]}
+```
