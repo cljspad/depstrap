@@ -1,5 +1,6 @@
 (defproject cljspad/webjars-server "0.1.0"
   :source-paths ["src"]
+  :resource-paths ["resources"]
   :profiles {:uberjar {:aot :all}
              :dev     {:source-paths ["src" "dev-src"]
                        :dependencies [[clj-http "3.10.3"]]}}
@@ -14,4 +15,5 @@
                  [ring/ring-defaults "0.3.2"]
                  [metosin/reitit-core "0.5.5"]
                  [metosin/reitit-ring "0.5.5"]
-                 [ring-cors "0.1.13"]])
+                 [ring-cors "0.1.13"]
+                 [hiccup "1.0.5"]])

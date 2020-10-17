@@ -7,7 +7,10 @@
             [reitit.ring :as ring]
             [clojure.edn :as edn]
             [cognitect.transit :as t]
-            [ring.middleware.cors :refer [wrap-cors]])
+            [ring.middleware.cors :refer [wrap-cors]]
+            [clojure.java.io :as io]
+            [clojure.pprint :as pprint]
+            [hiccup.core :as hiccup])
   (:import (java.util UUID)
            (org.eclipse.jetty.server Server)
            (java.io ByteArrayOutputStream BufferedInputStream)
@@ -145,8 +148,33 @@
                        (into {}))})
       {:status 404})))
 
+(defn index-html [manifest]
+  [:html {:lang "en"}
+   [:head
+    [:title "cljspad"]
+    [:meta {:charset "utf-8"}]
+    [:meta {:name "viewport" :content "width=device-width"}]
+    [:meta {:content "ClojureScript repository for cljs.js environments" :name "description"}]
+    [:meta {:content "clojure,clojurescript,sandbox,bootstrap,compiler,environment" :name "keywords"}]
+    [:link {:rel "stylesheet" :href "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.1/styles/github.min.css"}]]
+   [:body
+    [:script {:src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.1/highlight.min.js" :type "text/javascript"}]
+    [:script "hljs.initHighlightingOnLoad();"]
+    [:pre (slurp (io/resource "splash.txt"))]
+    [:a {:href "https://github.com/cljspad/webjars"} "GitHub"]
+    [:pre
+     [:code {:class "clojure"}
+      (with-out-str
+        (pprint/pprint manifest))]]]])
+
+(defn render-index-html [{:keys [manifest]} _]
+  {:status  200
+   :body    (hiccup/html (index-html manifest))
+   :headers {"Content-Type" "text/html"}})
+
 (defn routes [ctx]
-  [["/api/:version/manifest.edn" {:get {:handler (partial manifest-resp ctx)}}]
+  [["/" {:get {:handler (partial render-index-html ctx)}}]
+   ["/api/:version/manifest.edn" {:get {:handler (partial manifest-resp ctx)}}]
    ["/api/:version/bootstrap" {:post {:handler (partial create-deps-store ctx)}}]
    ["/api/:version/bootstrap/:id/index.transit.json" {:get {:handler (partial massage-index-transit-json ctx)}}]
    ["/api/:version/bootstrap/:id/out/*" {:get {:handler (partial read-s3-file ctx)}}]])
