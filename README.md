@@ -2,23 +2,17 @@
 
 # webjars
 
-webjars is a ClojureScript repository (think [Clojars](https://clojars.org/)) for self-hosted ClojureScript projects. 
+webjars is a ClojureScript repository (think [Clojars](https://clojars.org/)) for self-hosted ClojureScript libraries.
 
-You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/)
+You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/).
 
-## What/How?
-
-The webjars API wraps `shadow.cljs.bootstrap.browser` under the hoods to resolve dependencies. You can read about this API [here](https://code.thheller.com/blog/shadow-cljs/2017/10/14/bootstrap-support.html)
-
-webjars are simply pre-compiled `{:target :bootstrap}` libraries uploaded to S3 for effortless consumption :)
-
-Visit https://webjars.cljspad.dev to browse all available libraries.  
+Visit https://webjars.cljspad.dev to browse all available libraries.
 
 ## Usage
 
 Add the following dependency to your project:
 
-```clojure 
+```clojure
 [cljspad/webjars-api "0.1.0"]
 ```
 
@@ -39,15 +33,15 @@ And then:
    :load (partial webjars/load compiler-state)})
 
 (defn eval-ratom []
-  (cljs.js/eval-str 
-    compiler-state 
-    "(rg/atom 1)" 
+  (cljs.js/eval-str
+    compiler-state
+    "(reagent.core/atom 1)"
     "[test]"
     (eval-opts compiler-state)
     print-result))
 
 (def opts
-  {:webjars/dependencies '[[reagent "1.0.0-alpha2"]] 
+  {:webjars/dependencies '[[reagent "1.0.0-alpha2"]]
    :load-on-init         #{'reagent.core}})
 
 (webjars/init compiler-state opts eval-ratom)

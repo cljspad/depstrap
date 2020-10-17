@@ -6,12 +6,12 @@
             [ring.middleware.defaults :as defaults]
             [reitit.ring :as ring]
             [clojure.edn :as edn]
-            [clj-http.client :as http]
             [cognitect.transit :as t]
             [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.util UUID)
            (org.eclipse.jetty.server Server)
-           (java.io ByteArrayOutputStream BufferedInputStream))
+           (java.io ByteArrayOutputStream BufferedInputStream)
+           (java.util.concurrent CountDownLatch))
   (:gen-class))
 
 (defmethod ig/init-key :server/deps-store
@@ -175,30 +175,19 @@
    :ring/server       {:handler (ig/ref :ring/handler)
                        :port    (:port opts)}})
 
-(defn dev-opts []
-  {:region  "us-east-1"
-   :bucket  "webjars.cljspad.dev"
-   :port    3001})
-
 (defn prod-opts []
-  {:region  (System/getenv "S3_REGION")
-   :bucket  (System/getenv "S3_BUCKET")
-   :port    (Long/parseLong (System/getenv "PORT"))})
+  {:region (System/getenv "S3_REGION")
+   :bucket (System/getenv "S3_BUCKET")
+   :port   (Long/parseLong (System/getenv "PORT"))})
 
-(defonce sys
-  (atom nil))
-
-(defn start! []
-  (reset! sys (ig/init (config (dev-opts)))))
-
-(defn stop! []
-  (swap! sys ig/halt!))
-
-(comment
- (stop!)
- (start!)
- (http/post "http://localhost:3001/api/1/bootstrap"
-            {:body    (pr-str [['reagent "1.0.0-alpha2"]])
-             :headers {"Content-Type" "application/edn"}})
-
- (http/get "http://localhost:3001/api/1/bootstrap/f62e20b2-0512-48ed-9794-07552bcea212/index.transit.json"))
+(defn -main [& _]
+  (try
+    (let [system (ig/init (config (prod-opts)))
+          latch  (CountDownLatch. 1)]
+      (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable (fn [] (.countDown latch))))
+      (.await latch)
+      (ig/halt! system)
+      (System/exit 0))
+    (catch Throwable e
+      (.printStackTrace e)
+      (System/exit 1))))
