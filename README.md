@@ -6,9 +6,9 @@ You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) boots
 
 ## What/How?
 
-webjars wraps the `shadow.cljs.bootstrap.browser` API under the hoods to resolve dependencies. You can read about this API [here](https://code.thheller.com/blog/shadow-cljs/2017/10/14/bootstrap-support.html)
+The webjars API wraps `shadow.cljs.bootstrap.browser` under the hoods to resolve dependencies. You can read about this API [here](https://code.thheller.com/blog/shadow-cljs/2017/10/14/bootstrap-support.html)
 
-webjars are simply pre-compiled `{:target :bootstrap}` libraries uploaded to S3 for your consumption :)
+webjars are simply pre-compiled `{:target :bootstrap}` libraries uploaded to S3 for effortless consumption :)
 
 Visit https://webjars.cljspad.dev to browse all available libraries.  
 
