@@ -49,7 +49,7 @@ And then:
 
 ## Contributing 
 
-If you would like to submit a library to the webjars create an EDN definition in `repository/` like:
+If you would like to submit a library to the webjars repository, please create an EDN definition in `repository/` like:
 
 ```clojure
 {:package [reagent "1.0.0-alpha2"]
