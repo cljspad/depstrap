@@ -11,6 +11,8 @@
 (s/def :webjars/dependencies
   (s/coll-of :webjars/dependency))
 
+(def load boot/load)
+
 (defn init
   [compiler-state opts cb]
   (let [repo (or (:webjars/repository opts) webjars-repository)
