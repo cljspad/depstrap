@@ -1,0 +1,2 @@
+{:package [com.cognitect/transit-cljs "0.8.264"]
+ :entries [cognitect.transit]}
