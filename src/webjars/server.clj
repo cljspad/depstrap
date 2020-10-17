@@ -89,22 +89,20 @@
   [package-name package-version sources]
   (let [path (format "/out/%s/%s" (str package-name) (str package-version))]
     (into [] (map (fn [source]
-                    (-> source
-                        (update :js-name #(str path %))
-                        (update :ana-name #(str path %))
-                        (update :source-name #(str path %)))))
+                    (cond-> source
+                      (:js-name source) (update :js-name #(str path %))
+                      (:ana-name source) (update :ana-name #(str path %))
+                      (:source-name source) (update :source-name #(str path %)))))
           sources)))
 
 (defn unify-index
   [files]
-  {:exclude #{}
+  {:exclude (into #{} (mapcat :exclude) files)
    :sources (->> files
                  (map (fn [[[package-name package-version] manifest]]
                         (update manifest :sources #(update-sources package-name package-version %))))
                  (mapcat :sources)
-                 (group-by :resource-id)
-                 (map (fn [[_ vs]]
-                        (first vs)))
+                 ;; TODO: correctly deduplicate + unify deps -- order is important!
                  (vec))})
 
 (defn massage-index-transit-json

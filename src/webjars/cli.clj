@@ -19,13 +19,14 @@
   (edn/read-string (slurp f)))
 
 (defn webjar-config->build-config
-  [{:keys [package entries exclude modules]}]
+  [{:keys [package entries exclude macros compiler-options]}]
   {:dependencies [package]
-   :builds       {:webjar {:target     :bootstrap
-                           :output-dir "out"
-                           :entries    (vec entries)
-                           :exclude    (into '[cljs.js] exclude)
-                           :modules    (vec modules)}}})
+   :builds       {:webjar (cond-> {:target     :bootstrap
+                                   :output-dir "out"
+                                   :entries    (into '[cljs.js] entries)
+                                   :exclude    (into '[cljs.js] exclude)
+                                   :modules    (vec macros)}
+                            compiler-options (assoc :compiler-options compiler-options))}})
 
 (defn out-dir [[package-name package-version]]
   (let [path ["target" (namespace package-name) (name package-name) (str package-version)]]
@@ -96,7 +97,7 @@
   (doseq [webjar-file (webjar-files)]
     (build! ctx webjar-file)))
 
-#_(build-webjars!
+(build-webjars!
  {:bucket-name "webjars.cljspad.dev"
   :version     "1"})
 
