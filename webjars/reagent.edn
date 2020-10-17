@@ -1,2 +1,0 @@
-{:package [reagent "1.0.0-alpha2"]
- :entries [reagent.core reagent.dom react react-dom]}

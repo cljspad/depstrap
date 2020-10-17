@@ -1,9 +1,10 @@
-(ns webjars.cli
+#!/usr/bin/env bb
+
+(ns build
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
             [clojure.java.shell :as sh]
             [cheshire.core :as cheshire]
-            [cognitect.transit :as t]
             [clojure.string :as str])
   (:import (java.io File)))
 
@@ -43,31 +44,6 @@
     (io/make-parents out-file)
     (spit out-file (cheshire/generate-string (package-json (:package webjar-config))))))
 
-(defn update-sources
-  [ctx webjar-config sources]
-  (into [] (map (fn [source]
-                  (-> source
-                      (update :js-name #(str "http://localhost:3000" %))
-                      (update :ana-name #(str "http://localhost:3000" %))
-                      (update :source-name #(str "http://localhost:3000" %)))))
-        sources))
-
-(defn read-transit [f]
-  (with-open [in (io/input-stream f)]
-    (let [reader (t/reader in :json)]
-      (t/read reader))))
-
-(defn write-transit [f data]
-  (with-open [out (io/output-stream f)]
-    (let [writer (t/writer out :json)]
-      (t/write writer data))))
-
-(defn update-index-transit [ctx webjar-config]
-  (let [index-file (io/file (out-dir (:package webjar-config)) "out" "index.transit.json")
-        data       (-> (read-transit index-file)
-                       (update :sources #(update-sources ctx webjar-config %)))]
-    (write-transit index-file data)))
-
 (defn build! [ctx f]
   (let [webjar-config (slurp-edn f)
         build-config  (webjar-config->build-config webjar-config)
@@ -88,7 +64,7 @@
     nil))
 
 (defn webjar-files []
-  (->> (io/file "webjars")
+  (->> (io/file "repository")
        (file-seq)
        (filter (fn [^File file]
                  (str/ends-with? (.getName file) ".edn")))))
@@ -97,14 +73,14 @@
   (doseq [webjar-file (webjar-files)]
     (build! ctx webjar-file)))
 
-(build-webjars!
- {:bucket-name "webjars.cljspad.dev"
-  :version     "1"})
+(comment
+ (build-webjars!
+  {:bucket-name "webjars.cljspad.dev"
+   :version     "1"}))
 
-(defn -main [& _]
-  (let [ctx (slurp-edn "webjars.edn")]
-    (try (build-webjars! ctx)
-         (System/exit 0)
-         (catch Throwable e
-           (.printStackTrace e)
-           (System/exit 1)))))
+(let [ctx (slurp-edn "webjars.edn")]
+  (try (build-webjars! ctx)
+       (System/exit 0)
+       (catch Throwable e
+         (.printStackTrace e)
+         (System/exit 1))))

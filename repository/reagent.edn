@@ -1,0 +1,2 @@
+{:package [reagent "1.0.0-alpha2"]
+ :entries [reagent.dom reagent.core]}
