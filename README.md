@@ -36,15 +36,19 @@ And then:
   {:eval cljs.js/js-eval
    :load (partial webjars/load compiler-state)})
 
-(defn require-reagent []
+(defn eval-ratom []
   (cljs.js/eval-str 
     compiler-state 
-    "(require '[reagent.core :as rg]) (rg/atom 1)" 
+    "(rg/atom 1)" 
     "[test]"
     (eval-opts compiler-state)
     print-result))
 
-(webjars/init compiler-state {:webjars/dependencies '[[reagent "1.0.0-alpha2"]]} require-reagent)
+(def opts
+  {:webjars/dependencies '[[reagent "1.0.0-alpha2"]] 
+   :load-on-init         #{'reagent.core}})
+
+(webjars/init compiler-state opts eval-ratom)
 ```
 
 ## Contributing 
