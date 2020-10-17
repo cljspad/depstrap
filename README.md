@@ -39,8 +39,8 @@ And then:
 (defn require-reagent []
   (cljs.js/eval-str 
     compiler-state 
-    "(require '[reagent.core :as rg])" 
-    "[test]" 
+    "(require '[reagent.core :as rg]) (rg/atom 1)" 
+    "[test]"
     (eval-opts compiler-state)
     print-result))
 
