@@ -1,3 +1,5 @@
+[![Clojars Project](https://img.shields.io/clojars/v/cljspad/webjars-api.svg)](https://clojars.org/cljspad/webjars-api)
+
 # webjars
 
 webjars is a ClojureScript repository (think [Clojars](https://clojars.org/)) for self-hosted ClojureScript projects. 
