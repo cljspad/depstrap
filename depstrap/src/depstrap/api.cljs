@@ -25,6 +25,7 @@
         (.then (fn [resp]
                  (if (aget resp "ok")
                    (.text resp)
+                   ;; TODO: better error handling. eg, errors passed through callback...
                    (js/console.error (str "Failed to fetch webjar dependencies, server responded with " (aget resp "status"))))))
         (.then (fn [text]
                  (let [{:keys [bootstrap]} (edn/read-string text)]
