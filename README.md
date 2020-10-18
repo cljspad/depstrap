@@ -27,7 +27,7 @@ Add the following dependency to your project:
 (defn print-result [result]
   (js/console.log result))
 
-(defonce compiler-state (cljs.js/compiler-state))
+(defonce compiler-state (cljs.js/empty-state))
 
 (defn eval-opts
   [compiler-state]
