@@ -13,7 +13,8 @@
   (:import (java.util UUID)
            (org.eclipse.jetty.server Server)
            (java.io ByteArrayOutputStream BufferedInputStream)
-           (java.util.concurrent CountDownLatch))
+           (java.util.concurrent CountDownLatch)
+           (org.eclipse.jetty.server.handler.gzip GzipHandler))
   (:gen-class))
 
 (defmethod ig/init-key :server/deps-store
@@ -24,6 +25,19 @@
   [_ {:keys [region]}]
   (aws/client {:api :s3 :region region}))
 
+(defn jetty-configurator
+  [^Server server]
+  (let [content-types ["text/javascript"
+                       "application/javascript"
+                       "application/transit+json"
+                       "application/edn"
+                       "application/json"]
+        gzip-handler  (doto (GzipHandler.)
+                        (.setIncludedMimeTypes (into-array String content-types))
+                        (.setMinGzipSize 1024)
+                        (.setHandler (.getHandler server)))]
+    (.setHandler server gzip-handler)))
+
 (defmethod ig/init-key :ring/server
   [_ {:keys [handler port]}]
   (jetty/run-jetty
@@ -31,8 +45,9 @@
        (defaults/wrap-defaults defaults/api-defaults)
        (wrap-cors :access-control-allow-origin #".*"
                   :access-control-allow-methods [:get :post]))
-   {:port  port
-    :join? false}))
+   {:port         port
+    :join?        false
+    :configurator jetty-configurator}))
 
 (defmethod ig/halt-key! :ring/server
   [_ ^Server server]
@@ -132,6 +147,14 @@
 
       {:status 404})))
 
+(defn get-object [client bucket key]
+  (aws/invoke client {:op      :GetObject
+                      :request {:Bucket bucket
+                                :Key    key}}))
+
+(def get-object-mz
+  (memoize get-object))
+
 (defn read-s3-file
   [{:keys [client bucket]} req]
   (let [version (-> req :path-params :version)
@@ -139,9 +162,7 @@
         key     (subs (:uri req)
                       (count (format "/api/%s/bootstrap/%s/out" version id))
                       (count (:uri req)))
-        resp    (aws/invoke client {:op      :GetObject
-                                    :request {:Bucket bucket
-                                              :Key    (str "/" version key)}})]
+        resp    (get-object-mz client bucket (str "/" version key))]
     (if-not (:cognitect.anomalies/category resp)
       (let [body ^BufferedInputStream (:Body resp)]
         {:status  200
