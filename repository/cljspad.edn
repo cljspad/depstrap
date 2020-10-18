@@ -1,0 +1,7 @@
+{:package [cljspad/sandbox "0.1.0"]
+ :entries [sandbox.user 
+           sandbox.reagent
+           sandbox.markdown 
+           marked
+           cljs.pprint
+           cljs.tools.reader.edn]}
