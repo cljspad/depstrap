@@ -1,0 +1,2 @@
+{:package [re-frame "1.1.1"]
+ :entries [re-frame.core]}

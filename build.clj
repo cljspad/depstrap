@@ -23,11 +23,11 @@
   [{:keys [package entries exclude macros compiler-options]}]
   {:dependencies [package]
    :builds       {:depstrap (cond-> {:target     :bootstrap
-                                   :output-dir "out"
-                                   :entries    (into '[cljs.js] entries)
-                                   :exclude    (into '[cljs.js] exclude)
-                                   :modules    (vec macros)}
-                            compiler-options (assoc :compiler-options compiler-options))}})
+                                     :output-dir "out"
+                                     :entries    (into '[cljs.js] entries)
+                                     :exclude    (into '#{cljs.js} exclude)
+                                     :macros     (vec macros)}
+                              compiler-options (assoc :compiler-options compiler-options))}})
 
 (defn out-dir [[package-name package-version]]
   (let [path ["target" (namespace package-name) (name package-name) (str package-version)]]

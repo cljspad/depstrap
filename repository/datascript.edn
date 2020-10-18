@@ -1,0 +1,4 @@
+{:package          [datascript "1.0.1"]
+ :entries          [datascript.core]
+ :exclude          #{datascript.db}
+ :compiler-options {:externs ["datascript/externs.js"]}}
