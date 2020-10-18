@@ -5,7 +5,7 @@
 
 (defn dev-opts []
   {:region   "us-east-1"
-   :bucket   "depstrap.cljspad.dev"
+   :bucket   "webjars.cljspad.dev"
    :port     3001
    :endpoint "http://localhost:3001"})
 

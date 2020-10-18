@@ -97,14 +97,27 @@
                       (:source-name source) (update :source-name #(str path %)))))
           sources)))
 
+(defn deduplicate-sources [sources]
+  (reduce
+   (fn [ctx source]
+     (if (contains? (:resource-ids ctx) (:resource-id source))
+       ctx
+       (-> ctx
+           (update :sources conj source)
+           (update :resource-ids conj (:resource-id source)))))
+   {:sources [] :resource-ids #{}}
+   sources))
+
 (defn unify-index
   [files]
   {:exclude (into #{} (mapcat :exclude) files)
    :sources (->> files
                  (map (fn [[[package-name package-version] manifest]]
+                        (println (keys manifest))
                         (update manifest :sources #(update-sources package-name package-version %))))
                  (mapcat :sources)
-                 ;; TODO: correctly deduplicate + unify deps -- order is important!
+                 (deduplicate-sources)
+                 (:sources)
                  (vec))})
 
 (defn massage-index-transit-json
