@@ -2,11 +2,11 @@
 
 # depstrap
 
-depstrap is a repository (think [Clojars](https://clojars.org/)) for ClojureScript libraries that can be used in self-hosted environments.
+depstrap is a repository of open-source ClojureScript libraries that have been packaged for use in self-hosted environments.
 
 You can use depstrap with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/).
 
-Visit https://depstrap.cljspad.dev to browse all available libraries.
+Visit https://deps.cljspad.dev to browse all available libraries.
 
 ## Usage
 
@@ -42,7 +42,7 @@ And then:
 
 (def opts
   {:depstrap/dependencies '[[reagent "1.0.0-alpha2"]]
-   :load-on-init         #{'reagent.core}})
+   :load-on-init          #{'reagent.core}})
 
 (depstrap/init compiler-state opts eval-ratom)
 ```
