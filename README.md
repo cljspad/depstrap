@@ -8,7 +8,7 @@ You can use depstrap with the [cljs.js](http://cljs.github.io/api/cljs.js/) boot
 
 Visit https://deps.cljspad.dev to browse all available libraries.
 
-This is how [cljspad](https://cljspad.dev) resolves its dependencies at runtime.
+depstrap is how [cljspad](https://cljspad.dev) resolves its dependencies at runtime.
 
 ## Usage
 
