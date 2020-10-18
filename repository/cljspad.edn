@@ -1,4 +1,4 @@
-{:package [cljspad/sandbox "0.1.0"]
+{:package [cljspad/sandbox "0.1.1"]
  :entries [sandbox.user 
            sandbox.reagent
            sandbox.markdown 
