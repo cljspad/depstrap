@@ -2,7 +2,7 @@
 
 # webjars
 
-webjars is a ClojureScript repository (think [Clojars](https://clojars.org/)) for self-hosted ClojureScript libraries.
+webjars is a repository (think [Clojars](https://clojars.org/)) for ClojureScript libraries that can be used in self-hosted environments.
 
 You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/).
 

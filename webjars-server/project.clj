@@ -1,6 +1,5 @@
 (defproject cljspad/webjars-server "0.1.0"
   :source-paths ["src"]
-  :resource-paths ["resources"]
   :profiles {:uberjar {:aot :all}
              :dev     {:source-paths ["src" "dev-src"]
                        :dependencies [[clj-http "3.10.3"]]}}

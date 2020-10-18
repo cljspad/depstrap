@@ -8,7 +8,6 @@
             [clojure.edn :as edn]
             [cognitect.transit :as t]
             [ring.middleware.cors :refer [wrap-cors]]
-            [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [hiccup.core :as hiccup])
   (:import (java.util UUID)
@@ -151,7 +150,7 @@
 (defn index-html [manifest]
   [:html {:lang "en"}
    [:head
-    [:title "cljspad"]
+    [:title "webjars manifest"]
     [:meta {:charset "utf-8"}]
     [:meta {:name "viewport" :content "width=device-width"}]
     [:meta {:content "ClojureScript repository for cljs.js environments" :name "description"}]
@@ -160,12 +159,9 @@
    [:body
     [:script {:src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.1/highlight.min.js" :type "text/javascript"}]
     [:script "hljs.initHighlightingOnLoad();"]
-    [:pre (slurp (io/resource "splash.txt"))]
-    [:a {:href "https://github.com/cljspad/webjars"} "GitHub"]
-    [:pre
-     [:code {:class "clojure"}
-      (with-out-str
-        (pprint/pprint manifest))]]]])
+    [:pre [:code {:class "clojure"}
+           (with-out-str
+             (pprint/pprint manifest))]]]])
 
 (defn render-index-html [{:keys [manifest]} _]
   {:status  200
