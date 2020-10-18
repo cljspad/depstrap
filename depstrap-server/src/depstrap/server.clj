@@ -195,14 +195,15 @@
                              :bucket     (:bucket opts)
                              :deps-store (ig/ref :server/deps-store)
                              :manifest   (ig/ref :server/manifest)
-                             :endpoint   "http://localhost:3001"}}
+                             :endpoint   (:endpoint opts)}}
    :ring/server       {:handler (ig/ref :ring/handler)
                        :port    (:port opts)}})
 
 (defn prod-opts []
-  {:region (System/getenv "S3_REGION")
-   :bucket (System/getenv "S3_BUCKET")
-   :port   (Long/parseLong (System/getenv "PORT"))})
+  {:region   (System/getenv "S3_REGION")
+   :bucket   (System/getenv "S3_BUCKET")
+   :port     (Long/parseLong (System/getenv "PORT"))
+   :endpoint (System/getenv "DEPSTRAP_ENDPOINT")})
 
 (defn -main [& _]
   (try

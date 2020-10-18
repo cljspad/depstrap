@@ -4,9 +4,10 @@
             [clj-http.client :as http]))
 
 (defn dev-opts []
-  {:region "us-east-1"
-   :bucket "depstrap.cljspad.dev"
-   :port   3001})
+  {:region   "us-east-1"
+   :bucket   "depstrap.cljspad.dev"
+   :port     3001
+   :endpoint "http://localhost:3001"})
 
 (defonce sys
   (atom nil))
