@@ -1,7 +1,7 @@
-(ns webjars.server
+(ns depstrap.server
   (:require [integrant.core :as ig]
             [cognitect.aws.client.api :as aws]
-            [webjars.server.manifest]
+            [depstrap.server.manifest]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.defaults :as defaults]
             [reitit.ring :as ring]
@@ -150,7 +150,7 @@
 (defn index-html [manifest]
   [:html {:lang "en"}
    [:head
-    [:title "webjars manifest"]
+    [:title "depstrap manifest"]
     [:meta {:charset "utf-8"}]
     [:meta {:name "viewport" :content "width=device-width"}]
     [:meta {:content "ClojureScript repository for cljs.js environments" :name "description"}]

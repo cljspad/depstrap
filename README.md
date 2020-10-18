@@ -1,26 +1,26 @@
-[![Clojars Project](https://img.shields.io/clojars/v/cljspad/webjars-api.svg)](https://clojars.org/cljspad/webjars-api)
+[![Clojars Project](https://img.shields.io/clojars/v/cljspad/depstrap-api.svg)](https://clojars.org/cljspad/depstrap-api)
 
-# webjars
+# depstrap
 
-webjars is a repository (think [Clojars](https://clojars.org/)) for ClojureScript libraries that can be used in self-hosted environments.
+depstrap is a repository (think [Clojars](https://clojars.org/)) for ClojureScript libraries that can be used in self-hosted environments.
 
-You can use webjars with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/).
+You can use depstrap with the [cljs.js](http://cljs.github.io/api/cljs.js/) bootstrapped compiler and [shadow-cljs](http://shadow-cljs.org/).
 
-Visit https://webjars.cljspad.dev to browse all available libraries.
+Visit https://depstrap.cljspad.dev to browse all available libraries.
 
 ## Usage
 
 Add the following dependency to your project:
 
 ```clojure
-[cljspad/webjars-api "0.1.0"]
+[cljspad/depstrap-api "0.1.0"]
 ```
 
 And then:
 
 ```clojure
 (require '[cljs.js :as cljs.js])
-(require '[webjars.api :as webjars])
+(require '[depstrap.api :as depstrap])
 
 (defn print-result [result]
   (js/console.log result))
@@ -30,7 +30,7 @@ And then:
 (defn eval-opts
   [compiler-state]
   {:eval cljs.js/js-eval
-   :load (partial webjars/load compiler-state)})
+   :load (partial depstrap/load compiler-state)})
 
 (defn eval-ratom []
   (cljs.js/eval-str
@@ -41,15 +41,15 @@ And then:
     print-result))
 
 (def opts
-  {:webjars/dependencies '[[reagent "1.0.0-alpha2"]]
+  {:depstrap/dependencies '[[reagent "1.0.0-alpha2"]]
    :load-on-init         #{'reagent.core}})
 
-(webjars/init compiler-state opts eval-ratom)
+(depstrap/init compiler-state opts eval-ratom)
 ```
 
 ## Contributing 
 
-If you would like to submit a library to the webjars repository, please create an EDN definition in `repository/` like:
+If you would like to submit a library to the depstrap repository, please create an EDN definition in `repository/` like:
 
 ```clojure
 {:package [reagent "1.0.0-alpha2"]

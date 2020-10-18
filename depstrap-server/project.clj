@@ -1,9 +1,9 @@
-(defproject cljspad/webjars-server "0.1.0"
+(defproject cljspad/depstrap-server "0.1.0"
   :source-paths ["src"]
   :profiles {:uberjar {:aot :all}
              :dev     {:source-paths ["src" "dev-src"]
                        :dependencies [[clj-http "3.10.3"]]}}
-  :main webjars.server
+  :main depstrap.server
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [com.cognitect.aws/api "0.8.474"]
                  [com.cognitect.aws/endpoints "1.1.11.842"]

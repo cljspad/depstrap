@@ -19,10 +19,10 @@
 (defn slurp-edn [f]
   (edn/read-string (slurp f)))
 
-(defn webjar-config->build-config
+(defn depstrap-config->build-config
   [{:keys [package entries exclude macros compiler-options]}]
   {:dependencies [package]
-   :builds       {:webjar (cond-> {:target     :bootstrap
+   :builds       {:depstrap (cond-> {:target     :bootstrap
                                    :output-dir "out"
                                    :entries    (into '[cljs.js] entries)
                                    :exclude    (into '[cljs.js] exclude)
@@ -34,52 +34,52 @@
     (apply io/file (filter identity path))))
 
 (defn spit-shadow-cljs-edn!
-  [webjar-config build-config]
-  (let [out-file (io/file (out-dir (:package webjar-config)) "shadow-cljs.edn")]
+  [depstrap-config build-config]
+  (let [out-file (io/file (out-dir (:package depstrap-config)) "shadow-cljs.edn")]
     (io/make-parents out-file)
     (spit out-file (pr-str build-config))))
 
-(defn spit-package-json! [webjar-config]
-  (let [out-file (io/file (out-dir (:package webjar-config)) "package.json")]
+(defn spit-package-json! [depstrap-config]
+  (let [out-file (io/file (out-dir (:package depstrap-config)) "package.json")]
     (io/make-parents out-file)
-    (spit out-file (cheshire/generate-string (package-json (:package webjar-config))))))
+    (spit out-file (cheshire/generate-string (package-json (:package depstrap-config))))))
 
 (defn build! [ctx f]
-  (let [webjar-config (slurp-edn f)
-        build-config  (webjar-config->build-config webjar-config)
-        out-dir       (out-dir (:package webjar-config))
+  (let [depstrap-config (slurp-edn f)
+        build-config  (depstrap-config->build-config depstrap-config)
+        out-dir       (out-dir (:package depstrap-config))
         dir           (str out-dir)]
     (println dir)
-    (spit-shadow-cljs-edn! webjar-config build-config)
-    (spit-package-json! webjar-config)
+    (spit-shadow-cljs-edn! depstrap-config build-config)
+    (spit-package-json! depstrap-config)
     (println (sh/sh "npm" "install" :dir dir))
-    (println (sh/sh "shadow-cljs" "compile" "webjar" :dir dir))
+    (println (sh/sh "shadow-cljs" "compile" "depstrap" :dir dir))
     (println (sh/sh "aws" "s3" "cp" "--recursive"
                     (str (io/file out-dir "out"))
                     (format "s3://%s/%s/%s/%s"
                             (:bucket-name ctx)
                             (:version ctx)
-                            (-> webjar-config :package first)
-                            (-> webjar-config :package second))))
+                            (-> depstrap-config :package first)
+                            (-> depstrap-config :package second))))
     nil))
 
-(defn webjar-files []
+(defn depstrap-files []
   (->> (io/file "repository")
        (file-seq)
        (filter (fn [^File file]
                  (str/ends-with? (.getName file) ".edn")))))
 
-(defn build-webjars! [ctx]
-  (doseq [webjar-file (webjar-files)]
-    (build! ctx webjar-file)))
+(defn build-depstrap! [ctx]
+  (doseq [depstrap-file (depstrap-files)]
+    (build! ctx depstrap-file)))
 
 (comment
- (build-webjars!
-  {:bucket-name "webjars.cljspad.dev"
+ (build-depstrap!
+  {:bucket-name "depstrap.cljspad.dev"
    :version     "1"}))
 
-(let [ctx (slurp-edn "webjars.edn")]
-  (try (build-webjars! ctx)
+(let [ctx (slurp-edn "depstrap.edn")]
+  (try (build-depstrap! ctx)
        (System/exit 0)
        (catch Throwable e
          (.printStackTrace e)

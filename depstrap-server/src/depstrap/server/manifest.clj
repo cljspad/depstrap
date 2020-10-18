@@ -1,4 +1,4 @@
-(ns webjars.server.manifest
+(ns depstrap.server.manifest
   (:require [clojure.string :as str]
             [cognitect.aws.client.api :as aws]
             [integrant.core :as ig]))

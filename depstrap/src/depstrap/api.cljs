@@ -1,22 +1,22 @@
-(ns webjars.api
+(ns depstrap.api
   (:require [cljs.tools.reader.edn :as edn]
             [shadow.cljs.bootstrap.browser :as boot]
             [cljs.spec.alpha :as s]))
 
-(goog-define webjars-repository "https://webjars.cljspad.dev")
+(goog-define depstrap-repository "https://deps.cljspad.dev")
 
-(s/def :webjars/dependency
+(s/def :depstrap/dependency
   (s/tuple symbol? string?))
 
-(s/def :webjars/dependencies
-  (s/coll-of :webjars/dependency))
+(s/def :depstrap/dependencies
+  (s/coll-of :depstrap/dependency))
 
 (def load boot/load)
 
 (defn init
   [compiler-state opts cb]
-  (let [repo (or (:webjars/repository opts) webjars-repository)
-        deps (s/assert* :webjars/dependencies (:webjars/dependencies opts))
+  (let [repo (or (:depstrap/repository opts) depstrap-repository)
+        deps (s/assert* :depstrap/dependencies (:depstrap/dependencies opts))
         url  (str repo "/api/1/bootstrap")
         req  (clj->js {:method  "POST"
                        :headers {"Content-Type" "application/edn"}

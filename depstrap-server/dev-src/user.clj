@@ -1,11 +1,11 @@
 (ns user
   (:require [integrant.core :as ig]
-            [webjars.server :as server]
+            [depstrap.server :as server]
             [clj-http.client :as http]))
 
 (defn dev-opts []
   {:region "us-east-1"
-   :bucket "webjars.cljspad.dev"
+   :bucket "depstrap.cljspad.dev"
    :port   3001})
 
 (defonce sys
