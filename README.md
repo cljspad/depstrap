@@ -1,4 +1,4 @@
-[![Clojars Project](https://img.shields.io/clojars/v/cljspad/depstrap-api.svg)](https://clojars.org/cljspad/depstrap-api)
+[![Clojars Project](https://img.shields.io/clojars/v/cljspad/depstrap.svg)](https://clojars.org/cljspad/depstrap)
 
 # depstrap
 
