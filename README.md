@@ -16,6 +16,8 @@ Add the following dependency to your project:
 [cljspad/depstrap-api "0.1.0"]
 ```
 
+**Note:** depstrap requires [shadow-cljs](http://shadow-cljs.org/). This is because it wraps the `shadow.cljs.bootstrap.browser` API, and repository libraries have been compiled with `{:target :bootstrap}`
+
 And then:
 
 ```clojure
