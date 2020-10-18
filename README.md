@@ -55,9 +55,9 @@ And then:
 
 The second argument to `depstrap.api/init` is an options map:
 
-* `:load-on-init`: a set of namespaces to load on initialization
-* `:depstrap/dependencies`: a collection of dependencies to load
-* `:depstrap/repository`: the repository URL that resolves the dependencies (default: `https://deps.cljspad.dev`)
+* `:load-on-init` - a set of namespaces to load on initialization
+* `:depstrap/dependencies` - a collection of dependencies to load
+* `:depstrap/repository` - the repository URL that resolves the dependencies (default: `https://deps.cljspad.dev`)
 
 ## Contributing 
 
