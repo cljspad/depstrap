@@ -44,11 +44,11 @@ And then:
     (eval-opts compiler-state)
     print-result))
 
-(def opts
+(def init-opts
   {:depstrap/dependencies '[[reagent "1.0.0-alpha2"]]
    :load-on-init          #{'reagent.core}})
 
-(depstrap/init compiler-state opts eval-ratom)
+(depstrap/init compiler-state init-opts eval-ratom)
 ```
 
 ### Configuration options
