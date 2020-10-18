@@ -148,9 +148,14 @@
       {:status 404})))
 
 (defn get-object [client bucket key]
-  (aws/invoke client {:op      :GetObject
-                      :request {:Bucket bucket
-                                :Key    key}}))
+  (let [resp (aws/invoke client {:op      :GetObject
+                                 :request {:Bucket bucket
+                                           :Key    key}})]
+    (when-not (:cognitect.anomalies/category resp)
+      (-> resp
+          (update :Body #(when-let [body ^BufferedInputStream %]
+                           (.readAllBytes body)))
+          (select-keys [:ContentType :ContentLength :LastModified :Etag :Body])))))
 
 (def get-object-mz
   (memoize get-object))
@@ -161,23 +166,21 @@
         id      (-> req :path-params :id)
         key     (subs (:uri req)
                       (count (format "/api/%s/bootstrap/%s/out" version id))
-                      (count (:uri req)))
-        resp    (get-object-mz client bucket (str "/" version key))]
-    (if-not (:cognitect.anomalies/category resp)
-      (let [body ^BufferedInputStream (:Body resp)]
-        {:status  200
-         :body    (.readAllBytes body)
-         :headers (->> {"Content-Type"   (when-let [content-type (:ContentType resp)]
-                                           (str content-type))
-                        "Content-Length" (when-let [content-length (:ConentLength resp)]
-                                           (when (pos? content-length)
-                                             (str content-length)))
-                        "Last-Modified"  (when-let [last-modified (:LastModified resp)]
-                                           (str last-modified))
-                        "ETag"           (when-let [etag (:Etag resp)]
-                                           (str etag))}
-                       (filter (fn [[_ v]] (some? v)))
-                       (into {}))})
+                      (count (:uri req)))]
+    (if-let [resp (get-object-mz client bucket (str "/" version key))]
+      {:status  200
+       :body    (:Body resp)
+       :headers (->> {"Content-Type"   (when-let [content-type (:ContentType resp)]
+                                         (str content-type))
+                      "Content-Length" (when-let [content-length (:ConentLength resp)]
+                                         (when (pos? content-length)
+                                           (str content-length)))
+                      "Last-Modified"  (when-let [last-modified (:LastModified resp)]
+                                         (str last-modified))
+                      "ETag"           (when-let [etag (:Etag resp)]
+                                         (str etag))}
+                     (filter (fn [[_ v]] (some? v)))
+                     (into {}))}
       {:status 404})))
 
 (defn index-html [manifest]
