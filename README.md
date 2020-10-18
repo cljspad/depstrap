@@ -8,6 +8,8 @@ You can use depstrap with the [cljs.js](http://cljs.github.io/api/cljs.js/) boot
 
 Visit https://deps.cljspad.dev to browse all available libraries.
 
+This is how [cljspad](https://cljspad.dev) resolves its dependencies at runtime.
+
 ## Usage
 
 Add the following dependency to your project:
@@ -48,6 +50,14 @@ And then:
 
 (depstrap/init compiler-state opts eval-ratom)
 ```
+
+### Configuration options
+
+The second argument to `depstrap.api/init` is an options map:
+
+* `:load-on-init`: a set of namespaces to load on initialization
+* `:depstrap/dependencies`: a collection of dependencies to load
+* `:depstrap/repository`: the repository URL that resolves the dependencies (default: `https://deps.cljspad.dev`)
 
 ## Contributing 
 

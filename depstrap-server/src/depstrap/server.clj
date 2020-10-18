@@ -113,7 +113,6 @@
   {:exclude (into #{} (mapcat :exclude) files)
    :sources (->> files
                  (map (fn [[[package-name package-version] manifest]]
-                        (println (keys manifest))
                         (update manifest :sources #(update-sources package-name package-version %))))
                  (mapcat :sources)
                  (deduplicate-sources)
