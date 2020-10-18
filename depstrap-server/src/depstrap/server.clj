@@ -172,7 +172,7 @@
        :body    (:Body resp)
        :headers (->> {"Content-Type"   (when-let [content-type (:ContentType resp)]
                                          (str content-type))
-                      "Content-Length" (when-let [content-length (:ConentLength resp)]
+                      "Content-Length" (when-let [content-length (:ContentLength resp)]
                                          (when (pos? content-length)
                                            (str content-length)))
                       "Last-Modified"  (when-let [last-modified (:LastModified resp)]
